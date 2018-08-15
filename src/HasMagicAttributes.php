@@ -12,7 +12,7 @@ trait HasMagicAttributes
 
         $value = $this->retrieveAttributeValue($key);
 
-        if(is_null($value)) {
+        if (is_null($value)) {
             return $default;
         }
 
@@ -29,11 +29,10 @@ trait HasMagicAttributes
         $parent = $this;
         $value = null;
 
-        foreach($keys as $k) {
-
+        foreach ($keys as $k) {
             $value = $this->retrievePropertyFrom($k, $parent);
 
-            if(is_null($value)) {
+            if (is_null($value)) {
                 return null;
             }
 
@@ -45,11 +44,11 @@ trait HasMagicAttributes
 
     private function retrievePropertyFrom($key, $parent)
     {
-        if(is_object($parent) && isset($parent->$key)) {
+        if (is_object($parent) && isset($parent->$key)) {
             return $parent->$key;
         }
 
-        if(is_array($parent) && isset($parent[$key])) {
+        if (is_array($parent) && isset($parent[$key])) {
             return $parent[$key];
         }
 
