@@ -4,6 +4,7 @@ Retrieve nested property values via dot syntax.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/thinktomorrow/magic-attributes.svg?style=flat-square)](https://packagist.org/packages/thinktomorrow/magic-attributes)
 [![Build Status](https://img.shields.io/travis/thinktomorrow/magic-attributes/master.svg?style=flat-square)](https://travis-ci.org/thinktomorrow/magic-attributes)
+[![StyleCI](https://styleci.io/repos/144822210/shield?branch=master)](https://styleci.io/repos/144822210)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thinktomorrow/magic-attributes.svg?style=flat-square)](https://scrutinizer-ci.com/g/thinktomorrow/magic-attributes)
 [![Total Downloads](https://img.shields.io/packagist/dt/thinktomorrow/magic-attributes.svg?style=flat-square)](https://packagist.org/packages/thinktomorrow/magic-attributes)
 
