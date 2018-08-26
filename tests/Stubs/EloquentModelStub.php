@@ -18,7 +18,12 @@ class EloquentModelStub extends Model
             'zoo' => ['horror' => 'show'],
             'hell' => new static([
                 'raiser' => new static(['box' => 'never touch it']),
-            ])
+            ]),
+            'models' => [
+                new static(['box' => 'one']),
+                new static(['box' => 'two']),
+                new static([]),
+            ],
         ]);
     }
 }

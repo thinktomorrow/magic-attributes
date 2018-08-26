@@ -67,4 +67,14 @@ class GenericBehaviourTest extends TestCase
             return strtoupper($value);
         }));
     }
+
+    /** @test */
+    public function retrieving_value_from_array_plucks_all_values()
+    {
+        $this->assertInternalType('array', $this->stub->attr('models.box'));
+        $this->assertEquals(['one', 'two', 'three'], $this->stub->attr('models.box'));
+
+        // unknown key will return default
+        $this->assertEquals('foobar', $this->stub->attr('models.unknown', 'foobar'));
+    }
 }

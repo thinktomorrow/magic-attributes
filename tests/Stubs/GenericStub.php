@@ -13,5 +13,11 @@ class GenericStub
         $this->foo = 'bar';
         $this->zoo = ['horror' => 'show'];
         $this->hell = (object) ['raiser' => (object) ['box' => 'never touch it']];
+
+        $this->models = [
+            ['box' => 'one'],
+            ['box' => 'two'],
+            ['box' => 'three'],
+        ];
     }
 }
