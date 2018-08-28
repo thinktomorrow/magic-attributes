@@ -61,6 +61,12 @@ class GenericBehaviourTest extends TestCase
     }
 
     /** @test */
+    public function camelcased_in_combination_with_dot_syntax_is_not_converted_to_dot_syntax()
+    {
+        $this->assertEquals('mustsee', $this->stub->attr('crazyShow'));
+    }
+
+    /** @test */
     public function value_can_be_manipulated_at_runtime()
     {
         $this->assertSame('BAR', $this->stub->attr('foo', null, function ($value) {
@@ -76,5 +82,15 @@ class GenericBehaviourTest extends TestCase
 
         // unknown key will return default
         $this->assertEquals('foobar', $this->stub->attr('models.unknown', 'foobar'));
+    }
+
+    /** @test */
+    public function it_can_recursively_pluck_value_from_array()
+    {
+        $this->assertInternalType('array', $this->stub->attr('recursiveModels.box.inner'));
+        $this->assertEquals(['one', 'two'], $this->stub->attr('recursiveModels.box.inner'));
+
+        // unknown key will return default
+        $this->assertEquals('foobar', $this->stub->attr('recursiveModels.box.unknown', 'foobar'));
     }
 }

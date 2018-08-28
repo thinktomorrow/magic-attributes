@@ -10,7 +10,17 @@ trait HasMagicAttributes
             return $this->{$key}();
         }
 
-        $value = $this->retrieveAttributeValue($key);
+        /**
+         * We first try to fetch the key as is, and then we try to fetch
+         * with converting camelcase to dot syntax as well.
+         */
+        $value = null;
+
+        foreach([$key, $this->camelCaseToDotSyntax($key)] as $k) {
+            if(null !== ($value = $this->retrieveAttributeValue($k))) {
+                break;
+            }
+        }
 
         if (is_null($value)) {
             return $default;
@@ -23,8 +33,6 @@ trait HasMagicAttributes
 
     private function retrieveAttributeValue($key)
     {
-        $key = $this->camelCaseToDotSyntax($key);
-
         $keys = explode('.', $key);
         $parent = $this;
         $value = null;
@@ -46,13 +54,17 @@ trait HasMagicAttributes
     {
         if(null !== ($value = $this->retrieveProperty($key, $parent))) return $value;
 
-        // At this point if the value is not a property, Check if array that consists of arrays / objects and try to pluck the key
-        if( ! $this->isMultidimensionalArray($parent)) return null;
+        /**
+         * At this point, we know that the key isn't present as property.
+         * We now check if its an array consisting itself of nested items
+         * so we can try to pluck the values by key from those arrays / objects.
+         */
+        if( ! $this->isMultiDimensional($parent)) return null;
 
         return $this->pluck($key, $parent);
     }
 
-    private function isMultidimensionalArray($array): bool
+    private function isMultiDimensional($array): bool
     {
         if( !is_array($array)) return false;
 
