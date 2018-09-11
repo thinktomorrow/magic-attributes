@@ -16,8 +16,8 @@ trait HasMagicAttributes
          */
         $value = null;
 
-        foreach([$key, $this->camelCaseToDotSyntax($key)] as $k) {
-            if(null !== ($value = $this->retrieveAttributeValue($k))) {
+        foreach ([$key, $this->camelCaseToDotSyntax($key)] as $k) {
+            if (null !== ($value = $this->retrieveAttributeValue($k))) {
                 break;
             }
         }
@@ -52,14 +52,18 @@ trait HasMagicAttributes
 
     private function retrieveValue($key, $parent)
     {
-        if(null !== ($value = $this->retrieveProperty($key, $parent))) return $value;
+        if (null !== ($value = $this->retrieveProperty($key, $parent))) {
+            return $value;
+        }
 
         /**
          * At this point, we know that the key isn't present as property.
          * We now check if its an array consisting itself of nested items
          * so we can try to pluck the values by key from those arrays / objects.
          */
-        if( ! $this->isMultiDimensional($parent)) return null;
+        if (! $this->isMultiDimensional($parent)) {
+            return null;
+        }
 
         return $this->pluck($key, $parent);
     }
@@ -67,11 +71,17 @@ trait HasMagicAttributes
     private function isMultiDimensional($array): bool
     {
         // A eloquent collection is always considered multidimensional
-        if($this->isCollection($array)) return true;
+        if ($this->isCollection($array)) {
+            return true;
+        }
 
-        if( !is_array($array)) return false;
+        if (!is_array($array)) {
+            return false;
+        }
 
-        if(count($array) != count($array, COUNT_RECURSIVE )) return true;
+        if (count($array) != count($array, COUNT_RECURSIVE)) {
+            return true;
+        }
 
         // If count is the same, it still could be a list of objects
         // which we will treat the same as a multidim. array
@@ -80,12 +90,14 @@ trait HasMagicAttributes
 
     private function pluck($key, $list)
     {
-        if( ! $this->isAccessibleAsArray($list)) return null;
+        if (! $this->isAccessibleAsArray($list)) {
+            return null;
+        }
 
         $values = [];
 
-        foreach($list as $item) {
-            if($value = $this->retrieveProperty($key, $item)) {
+        foreach ($list as $item) {
+            if ($value = $this->retrieveProperty($key, $item)) {
                 $values[] = $value;
             }
         }
