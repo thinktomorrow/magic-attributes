@@ -66,6 +66,9 @@ trait HasMagicAttributes
 
     private function isMultiDimensional($array): bool
     {
+        // A eloquent collection is always considered multidimensional
+        if($this->isCollection($array)) return true;
+
         if( !is_array($array)) return false;
 
         if(count($array) != count($array, COUNT_RECURSIVE )) return true;
@@ -77,7 +80,7 @@ trait HasMagicAttributes
 
     private function pluck($key, $list)
     {
-        if(!is_array($list)) return null;
+        if( ! $this->isAccessibleAsArray($list)) return null;
 
         $values = [];
 
@@ -96,7 +99,7 @@ trait HasMagicAttributes
             return $parent->$key;
         }
 
-        if (is_array($parent) && isset($parent[$key])) {
+        if ($this->isAccessibleAsArray($parent) && isset($parent[$key])) {
             return $parent[$key];
         }
 
@@ -110,5 +113,21 @@ trait HasMagicAttributes
     private function camelCaseToDotSyntax($key): string
     {
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '.$0', $key));
+    }
+
+    private function isAccessibleAsArray($value)
+    {
+        return is_array($value) || $this->isCollection($value);
+    }
+
+    /**
+     * Check if value is a Collection with ArrayAccess.
+     *
+     * @param $value
+     * @return bool
+     */
+    private function isCollection($value)
+    {
+        return (is_object($value) &&  $value instanceof \ArrayAccess);
     }
 }
