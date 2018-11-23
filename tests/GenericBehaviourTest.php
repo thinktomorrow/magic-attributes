@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Trader\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
+use Thinktomorrow\MagicAttributes\MagicAttributeMethodProhibited;
 use Thinktomorrow\MagicAttributes\Tests\Stubs\GenericStub;
 use Thinktomorrow\Trader\Common\Presenters\GetDynamicValue;
 
@@ -92,5 +93,15 @@ class GenericBehaviourTest extends TestCase
 
         // unknown key will return default
         $this->assertEquals('foobar', $this->stub->attr('recursiveModels.box.unknown', 'foobar'));
+    }
+
+    /** @test */
+    public function method_can_be_set_to_non_public()
+    {
+        $this->expectException(MagicAttributeMethodProhibited::class);
+
+        $this->stub->prohibitMagicAttributeMethod = true;
+
+        $this->stub->attr('hell');
     }
 }

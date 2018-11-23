@@ -4,8 +4,22 @@ namespace Thinktomorrow\MagicAttributes;
 
 trait HasMagicAttributes
 {
+    /**
+     * Flag that allows to allow or disallow public retrieval of the magic attributes
+     * via the provided 'attr()' method. Set this to true in case you'd like to
+     * control the attribute retrieval yourself. Any attempt to use
+     * the 'attr' method will throw an exception.
+     *
+     * @var bool
+     */
+    public $prohibitMagicAttributeMethod = false;
+
     public function attr($key, $default = null, $closure = null)
     {
+        if($this->prohibitMagicAttributeMethod){
+            throw new MagicAttributeMethodProhibited('Attempt to fetch magic value for ['.$key.'], but magic attribute retrieval is set to prohibited.');
+        }
+
         if (method_exists($this, $key)) {
             return $this->{$key}();
         }
