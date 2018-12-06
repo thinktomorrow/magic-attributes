@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Trader\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\MagicAttributes\MagicAttributeMethodProhibited;
+use Thinktomorrow\MagicAttributes\DisallowedMagicAttributeUsage;
 use Thinktomorrow\MagicAttributes\Tests\Stubs\GenericStub;
 use Thinktomorrow\Trader\Common\Presenters\GetDynamicValue;
 
@@ -98,9 +98,9 @@ class GenericBehaviourTest extends TestCase
     /** @test */
     public function method_can_be_set_to_non_public()
     {
-        $this->expectException(MagicAttributeMethodProhibited::class);
+        $this->expectException(DisallowedMagicAttributeUsage::class);
 
-        $this->stub->prohibitMagicAttributeMethod = true;
+        $this->stub->disallow_magic_api = true;
 
         $this->stub->attr('hell');
     }

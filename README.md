@@ -24,6 +24,53 @@ With this package you could do it like this:
 return $class->attr('foo.bar');
 ```
 
+## Trait
+In order to add the functionality, you need to add a trait to your class. Here's an example:
+```php
+
+use \Thinktomorrow\MagicAttributes\HasMagicAttributes;
+
+class Customer{
+    use HasMagicAttributes;
+}
+
+```
+
+## Magic properties
+If you'd like to fetch your values as if they are top level properties of your class, you could setup a `__get` and `__isset` method
+in order to accomplish this. It can look something like this:
+
+```php
+
+class Customer{
+
+    /* allows for $customer->addressStreet instead of $customer->attr('address.street') */
+    public function __get($key)
+    {
+        return $this->magicAttribute($key);
+    }
+
+    /* with __isset you allow to check if the property exists on this class, e.g. isset($customer->addressStreet) */
+    public function __isset($key)
+    {
+        return false !== $this->magicAttribute($key, false);
+    }
+
+}
+
+```
+
+## Strict retrieval
+The package provides a single point of entry so by default you retrieve values via calling the `attr` method, e.g. `$class->attr('foo.bar')`.
+The benefit here is that this method is highly recognizable in the public api usage. The downside is that it does not strictly protects your class api and properties.
+One way of dealing with this is restricting the public usage of the `attr` method and providing your own public api.
+
+Within the MagicAttributes trait, you will find a `disallow_magic_api` property which defaults to false. This should be set to true in order to prevent public usage of the `attr` method.
+Any attempt in using this method, will now throw an `DisallowedMagicAttributeUsage` exception.
+
+In your class you can make use of the `magicAttribute` method which has the same signature as the `attr` method but
+which is a protected method and can only be used by the internal api.
+
 ## Security
 
 If you discover any security related issues, please email ben@thinktomorrow.be instead of using the issue tracker.

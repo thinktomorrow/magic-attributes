@@ -12,14 +12,19 @@ trait HasMagicAttributes
      *
      * @var bool
      */
-    public $prohibitMagicAttributeMethod = false;
+    public $disallow_magic_api = false;
 
     public function attr($key, $default = null, $closure = null)
     {
-        if($this->prohibitMagicAttributeMethod){
-            throw new MagicAttributeMethodProhibited('Attempt to fetch magic value for ['.$key.'], but magic attribute retrieval is set to prohibited.');
+        if($this->disallow_magic_api){
+            throw new DisallowedMagicAttributeUsage('Attempt to fetch magic value for ['.$key.'], but magic attribute retrieval is set to prohibited.');
         }
 
+        return $this->magicAttribute($key, $default, $closure);
+    }
+
+    protected function magicAttribute($key, $default = null, $closure = null)
+    {
         if (method_exists($this, $key)) {
             return $this->{$key}();
         }
