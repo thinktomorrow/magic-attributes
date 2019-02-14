@@ -25,10 +25,6 @@ trait HasMagicAttributes
 
     protected function magicAttribute($key, $default = null, $closure = null)
     {
-        if (method_exists($this, $key)) {
-            return $this->{$key}();
-        }
-
         /**
          * We first try to fetch the key as is, and then we try to fetch
          * with converting camelcase to dot syntax as well.
