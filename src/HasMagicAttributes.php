@@ -25,23 +25,20 @@ trait HasMagicAttributes
 
     protected function magicAttribute($key, $default = null, $closure = null)
     {
-        /**
-         * We first try to fetch the key as is, and then we try to fetch
-         * with converting camelcase to dot syntax as well.
-         */
-        $value = null;
+        // First try to fetch the key as is.
+        $value = $this->retrieveAttributeValue($key);
 
-        foreach ([$key, $this->camelCaseToDotSyntax($key)] as $k) {
-            if (null !== ($value = $this->retrieveAttributeValue($k))) {
-                break;
-            }
+        // If this is not found, we try to fetch by converting camelcase to dot syntax as well.
+        if(null === $value){
+            $value = $this->retrieveAttributeValue( $this->camelCaseToDotSyntax($key) );
         }
 
-        if (is_null($value)) {
+        // If by now the value is still not found, we return our default
+        if (null === $value) {
             return $default;
         }
 
-        return is_callable($closure)
+        return (null != $closure && is_callable($closure))
             ? call_user_func_array($closure, [$value, $this])
             : $value;
     }
@@ -55,7 +52,7 @@ trait HasMagicAttributes
         foreach ($keys as $k) {
             $value = $this->retrieveValue($k, $parent);
 
-            if (is_null($value)) {
+            if (null === $value) {
                 return null;
             }
 
@@ -65,9 +62,9 @@ trait HasMagicAttributes
         return $value;
     }
 
-    private function retrieveValue($key, $parent)
+    private function retrieveValue($key, $data)
     {
-        if (null !== ($value = $this->retrieveProperty($key, $parent))) {
+        if (null !== ($value = $this->retrieveProperty($key, $data))) {
             return $value;
         }
 
@@ -76,31 +73,31 @@ trait HasMagicAttributes
          * We now check if its an array consisting itself of nested items
          * so we can try to pluck the values by key from those arrays / objects.
          */
-        if (! $this->isMultiDimensional($parent)) {
+        if (! $this->isMultiDimensional($data)) {
             return null;
         }
 
-        return $this->pluck($key, $parent);
+        return $this->pluck($key, $data);
     }
 
-    private function isMultiDimensional($array): bool
+    private function isMultiDimensional($data): bool
     {
         // A eloquent collection is always considered multidimensional
-        if ($this->isCollection($array)) {
+        if ($this->isCollection($data)) {
             return true;
         }
 
-        if (!is_array($array)) {
+        if (!is_array($data)) {
             return false;
         }
 
-        if (count($array) != count($array, COUNT_RECURSIVE)) {
+        if (count($data) != count($data, COUNT_RECURSIVE)) {
             return true;
         }
 
         // If count is the same, it still could be a list of objects
         // which we will treat the same as a multidim. array
-        return is_object(reset($array));
+        return is_object(reset($data));
     }
 
     private function pluck($key, $list)
@@ -120,17 +117,13 @@ trait HasMagicAttributes
         return count($values) > 0 ? $values : null;
     }
 
-    private function retrieveProperty($key, $parent)
+    private function retrieveProperty($key, $data)
     {
-        if (is_object($parent) && isset($parent->$key)) {
-            return $parent->$key;
+        if ($this->isAccessibleAsArray($data)) {
+            return $data[$key] ?? null;
         }
 
-        if ($this->isAccessibleAsArray($parent) && isset($parent[$key])) {
-            return $parent[$key];
-        }
-
-        return null;
+        return $data->$key ?? null;
     }
 
     /**
@@ -155,6 +148,6 @@ trait HasMagicAttributes
      */
     private function isCollection($value)
     {
-        return (is_object($value) &&  $value instanceof \ArrayAccess);
+        return $value instanceof \ArrayAccess;
     }
 }
