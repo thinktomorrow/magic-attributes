@@ -16,7 +16,7 @@ trait HasMagicAttributes
 
     public function attr($key, $default = null, $closure = null)
     {
-        if($this->disallow_magic_api){
+        if ($this->disallow_magic_api) {
             throw new DisallowedMagicAttributeUsage('Attempt to fetch magic value for ['.$key.'], but magic attribute retrieval is set to prohibited.');
         }
 
@@ -29,8 +29,8 @@ trait HasMagicAttributes
         $value = $this->retrieveAttributeValue($key);
 
         // If this is not found, we try to fetch by converting camelcase to dot syntax as well.
-        if(null === $value){
-            $value = $this->retrieveAttributeValue( $this->camelCaseToDotSyntax($key) );
+        if (null === $value) {
+            $value = $this->retrieveAttributeValue($this->camelCaseToDotSyntax($key));
         }
 
         // If by now the value is still not found, we return our default
