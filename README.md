@@ -1,3 +1,5 @@
+**This repository is archived in favor of our new dynamic-attributes repository which provides the same behaviour. Please consider using this package instead since magic attributes will no longer be maintained.**
+
 # Magic attributes
 
 Retrieve nested property values via dot syntax.
